@@ -618,6 +618,10 @@ paircoll<-function(i,j,data,level,d="cosangle",dmat=NULL,newmed="medsil"){
 	medoids<-medoids[1:k]
 	clussizes<-clussizes[1:k]
 	block<-block[1:k,]
+	if(labels[labels==labeli][1]/10==trunclabels[labels==labeli][1]){
+		labels[labels==labeli]<-labels[labels==labeli]+1
+		labels[labels==labelj]<-labels[labels==labelj]+1
+	}
 	return(list(k,medoids,clussizes,labels,level[[5]],rbind(prevblock,block)))
 }
 
