@@ -25,7 +25,7 @@ bootmedoids<-function(data,medoids,d="cosangle",B=1000,I){
        	blabs[,b]<-apply(bdist,1,order)[1,]
 	}
 	for(i in 1:k)
-		props[,i]<-apply(blabs==i,1,mean,na.rm=TRUE)
+		props[,i]<-rowMeans(blabs==i,na.rm=TRUE)
 	props[medoids,]<-diag(k)
 	dimnames(props)<-list(dimnames(data)[[1]],paste("Cluster",0:(k-1),sep=""))
 	return(props)
@@ -59,7 +59,7 @@ boothopach<-function(data,hopachobj,B=1000,I,hopachlabels=FALSE){
        	blabs[,b]<-apply(bdist,1,order)[1,]
 	}
 	for(i in 1:k)
-		props[,i]<-apply(blabs==i,1,mean,na.rm=TRUE)
+		props[,i]<-rowMeans(blabs==i,na.rm=TRUE)
 	props[medoids,]<-diag(k)
 	if(hopachlabels)
 		labs<-as.character(hopachobj$clust$lab[medoids])

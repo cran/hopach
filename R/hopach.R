@@ -31,7 +31,7 @@ medstosil<-function(medoids,dist){
 			for(m in (1:k)){
 				subdist<-dist[clust==j,clust==m]
 				if(clussize[j]>1) 
-					avgdist[clust==j,m]<-apply(as.matrix(subdist),1,sum)
+					avgdist[clust==j,m]<-rowSums(as.matrix(subdist))
 				else
 					avgdist[clust==j,m]<-sum(subdist)
 				if(m==j){
@@ -80,7 +80,7 @@ labelstosil<-function(labels,dist){
 			for(m in (1:k)){
 				subdist<-dist[labels==unlabels[j],labels==unlabels[m]]
 				if(clussize[j]>1) 
-					avgdist[labels==unlabels[j],m]<-apply(as.matrix(subdist),1,sum)
+					avgdist[labels==unlabels[j],m]<-rowSums(as.matrix(subdist))
 				else 
 					avgdist[labels==unlabels[j],m]<-sum(subdist)
 				if(m==j){
@@ -167,7 +167,7 @@ labelstomss<-function(labels,dist,khigh=9,within="med",between="med",hierarchica
 #silcheck (silhouettes)
 silcheck<-function(data,kmax=9,diss=FALSE,echo=FALSE,graph=FALSE){
 	sil<-NULL
-	m<-min(kmax,max((!diss)*(dim(data)[1]-1),(diss)*(-0.5+sqrt(1+8*length(data))),na.rm=TRUE))
+	m<-min(kmax,max((!diss)*(dim(data)[1]-1),(diss)*(0.5*(sqrt(1+8*length(data))-1)),na.rm=TRUE))
 	if(m<2)
 		out<-c(1,NA)
 	else{
@@ -344,7 +344,7 @@ mssnextlevel<-function(data,prevlevel,dmat,kmax=9,khigh=9,within="med",between="
 		else 
 			medoid2<-medoids[j-1]
 		if(length(id1)>1) 
-			med2dist<-apply(as.matrix(dmat[labels==ordlabels[j],labels==labels[medoid2]]),1,mean)
+			med2dist<-rowMeans(as.matrix(dmat[labels==ordlabels[j],labels==labels[medoid2]]))
 		else 
 			med2dist<-mean(dmat[labels==ordlabels[j],labels==labels[medoid2]])
 		splitobj<-msssplitcluster(clust1,l1,id1,medoid1,med2dist,right,dmat[labels==l1,labels==l1],kmax,khigh,within,between)
@@ -476,7 +476,7 @@ mssinitlevel<-function(data,kmax=9,khigh=9,d="cosangle",dmat=NULL,within="med",b
 			labelsmed<-mpamobj$clustering
 			medmed<-mpamobj$medoids
 			clussizes<-mpamobj$clusinfo[,1]
-			prevlevel<-mssnextlevel(medoidsdata,list(2,medmed,clussizes,labelsmed,0,cbind(c(1,2),medmed),dmat=medoidsdist,kmax,khigh,within,between))
+			prevlevel<-mssnextlevel(medoidsdata,list(2,medmed,clussizes,labelsmed,0,cbind(c(1,2),medmed)),dmat=medoidsdist,kmax,khigh,within,between)
 			final<-prevlevel[[5]]
 			if(final==0){
 				depth<-(l-1)
@@ -569,7 +569,7 @@ paircoll<-function(i,j,data,level,d="cosangle",dmat=NULL,newmed="medsil"){
 			colldist<-distancematrix(data[labels==labeli,],d)
 		rowsub<-(1:p)[labels==labeli]
 		if(newmed=="center"){
-			sumdist<-apply(colldist,1,sum)
+			sumdist<-rowSums(colldist)
 			medoids[i]<-rowsub[order(sumdist)==1]
 		}
 		if(newmed=="medsil"){
@@ -601,7 +601,7 @@ paircoll<-function(i,j,data,level,d="cosangle",dmat=NULL,newmed="medsil"){
 			b<-matrix(b,nrow=collp,ncol=collp)
 			diag(b)<-0
 			b<-abs(b-colldist)/pmax(colldist,b)
-			sumdist<-apply(b,1,sum)
+			sumdist<-rowSums(b)
 			medoids[i]<-rowsub[rev(order(sumdist))==1]
 		}
 	}	
@@ -700,14 +700,22 @@ mssmulticollap<-function(data,level,khigh,d="cosangle",dmat=NULL,newmed="medsil"
 	i<-1
 	while(i<=maxncoll){
 		clusts<-vectmatrix(ord[i],k)
+		if(k<3){
+			if(newmed=="medsil") 
+				warning("Can't use newmed=medsil with less than 3 clusters. \n Substituting newmed=nn")
+			newmed<-"nn"
+		}
 		levelc<-paircoll(clusts[1],clusts[2],data,level,d,dmat,newmed)
 		mss2<-labelstomss(levelc[[4]],dmat,khigh,within,between)
-		r<-(mss1-mss2)/mss1
+		if(mss1==0) 
+			r<-0
+		else 
+			r<-(mss1-mss2)/mss1
 		if(r>=impr){
 			mss1<-mss2
 			level<-levelc
                         ncoll<-ncoll+1
-			k<-level[[3]]
+			k<-level[[1]]
 			maxncoll<-max(0,k*(k-1)/2)
 			i<-0
 			medoids<-level[[2]]
@@ -883,7 +891,7 @@ newnextlevel<-function(data,prevlevel,dmat,klow=2,khigh=6){
 		else 
 			medoid2<-medoids[j-1]
 		if(length(id1)>1) 
-			med2dist<-apply(as.matrix(dmat[labels==ordlabels[j],labels==labels[medoid2]]),1,mean)
+			med2dist<-rowMeans(as.matrix(dmat[labels==ordlabels[j],labels==labels[medoid2]]))
 		else 
 			med2dist<-mean(dmat[labels==ordlabels[j],labels==labels[medoid2]])
 		splitobj<-newsplitcluster(clust1,l1,id1,klow,kmax,medoid1,med2dist,right,dmat[labels==l1,labels==l1]) 

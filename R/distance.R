@@ -10,9 +10,10 @@ disscosangle<-function(X,na.rm=TRUE){
 	p<-dX[1]
 	n<-dX[2]
 	if(na.rm){
+		N<-rowSums(!is.na(X))
+		N2<-(!is.na(X))%*%t(!is.na(X))
 		X[is.na(X)]<-0
-		N<-apply(X!=0,1,sum)
-		N<-sqrt(N%*%t(N))/((X!=0)%*%t(X!=0))
+		N<-sqrt(N%*%t(N))/N2
 	}
 	else
 		N<-1
@@ -32,9 +33,10 @@ dissabscosangle<-function(X,na.rm=TRUE){
 	p<-dX[1]
 	n<-dX[2]
 	if(na.rm){
+		N<-rowSums(!is.na(X))
+		N2<-(!is.na(X))%*%t(!is.na(X))
 		X[is.na(X)]<-0
-		N<-apply(X!=0,1,sum)
-		N<-sqrt(N%*%t(N))/((X!=0)%*%t(X!=0))
+		N<-sqrt(N%*%t(N))/N2
 	}
 	else
 		N<-1
@@ -55,9 +57,9 @@ disseuclid<-function(X,na.rm=TRUE){
 	p<-dX[1]
 	n<-dX[2]
 	if(na.rm){
+		N<-rowSums(!is.na(X))
+		N2<-(!is.na(X))%*%t(!is.na(X))
 		X[is.na(X)]<-0
-		N<-apply(X!=0,1,sum)
-		N2<-(X!=0)%*%t(X!=0)
 		out<-matrix(rep(rowSums(X^2)/N,p),ncol=p)+t(matrix(rep(rowSums(X^2)/N,p),ncol=p))-2*X%*%t(X)/N2	
 	}
         else
@@ -76,9 +78,9 @@ dissabseuclid<-function(X,na.rm=TRUE){
 	p<-dX[1]
 	n<-dX[2]
 	if(na.rm){
+		N<-rowSums(!is.na(X))		
+		N2<-(!is.na(X))%*%t(!is.na(X))
 		X[is.na(X)]<-0
-		N<-apply(X!=0,1,sum)
-		N2<-(X!=0)%*%t(X!=0)
 		out1<-matrix(rep(rowSums(X^2)/N,p),ncol=p)+t(matrix(rep(rowSums(X^2)/N,p),ncol=p))-2*X%*%t(X)/N2	
 		out2<-matrix(rep(rowSums(X^2)/N,p),ncol=p)+t(matrix(rep(rowSums(X^2)/N,p),ncol=p))+2*X%*%t(X)/N2
 	}
@@ -139,10 +141,12 @@ vdisscosangle<-function(X,y,na.rm=TRUE){
 	if(length(y)!=n)
 		stop("Matrix and vector dimensions do not agree in vdisscosangle()")
 	if(na.rm){
+		N<-rowSums(!is.na(X))
+		N2<-sum(!is.na(y))
+		N3<-(!is.na(X))%*%(!is.na(y))
 		X[is.na(X)]<-0
 		y[is.na(y)]<-0
-		N<-apply(X!=0,1,sum)
-		N<-sqrt(N*sum(y!=0))/((X!=0)%*%(y!=0))
+		N<-sqrt(N*N2)/N3
 	}
 	else
 		N<-1
@@ -163,10 +167,12 @@ vdissabscosangle<-function(X,y,na.rm=TRUE){
 	if(length(y)!=n)
 		stop("Matrix and vector dimensions do not agree in vdissabscosangle()")
 	if(na.rm){
+		N<-rowSums(!is.na(X))
+		N2<-sum(!is.na(y))
+		N3<-(!is.na(X))%*%(!is.na(y))
 		X[is.na(X)]<-0
 		y[is.na(y)]<-0
-		N<-apply(X!=0,1,sum)
-		N<-sqrt(N*sum(y!=0))/((X!=0)%*%(y!=0))
+		N<-sqrt(N*N2)/N3
 	}
 	else
 		N<-1
@@ -187,12 +193,12 @@ vdisseuclid<-function(X,y,na.rm=TRUE){
 	if(length(y)!=n)
 		stop("Matrix and vector dimensions do not agree in vdisseuclid()")
 	if(na.rm){
+		N1<-rowSums(!is.na(X))
+		N2<-sum(!is.na(y))
+		N3<-(!is.na(X))%*%(!is.na(y))
 		X[is.na(X)]<-0
 		y[is.na(y)]<-0
-		NX<-apply(X!=0,1,sum)
-		Ny<-sum(y!=0)
-		N2<-(X!=0)%*%(y!=0)
-		suppressWarnings(out<-sqrt(as.vector(rowSums(X^2)/NX+sum(y^2)/Ny-2*X%*%y/N2)))	
+		suppressWarnings(out<-sqrt(as.vector(rowSums(X^2)/N1+sum(y^2)/N2-2*X%*%y/N3)))	
 	}
 	else
 		suppressWarnings(out<-sqrt(as.vector(rowMeans(X^2)+mean(y^2)-2*X%*%y/n)))
@@ -212,13 +218,13 @@ vdissabseuclid<-function(X,y,na.rm=TRUE){
 	if(length(y)!=n)
 		stop("Matrix and vector dimensions do not agree in vdissabseuclid()")
 	if(na.rm){
+		N1<-rowSums(!is.na(X))
+		N2<-sum(!is.na(y))
+		N3<-(!is.na(X))%*%(!is.na(y))
 		X[is.na(X)]<-0
 		y[is.na(y)]<-0
-		NX<-apply(X!=0,1,sum)
-		Ny<-sum(y!=0)
-		N2<-(X!=0)%*%(y!=0)
-		out1<-rowSums(X^2)/NX+sum(y^2)/Ny-2*X%*%y/N2
-		out2<-rowSums(X^2)/NX+sum(y^2)/Ny+2*X%*%y/N2
+		out1<-rowSums(X^2)/N1+sum(y^2)/N2-2*X%*%y/N3
+		out2<-rowSums(X^2)/N1+sum(y^2)/N2+2*X%*%y/N3
 	}
 	else{
 	        out1<-rowMeans(X^2)+mean(y^2)-2*X%*%y/n
