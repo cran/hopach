@@ -9,15 +9,16 @@ The function \code{boothopach} takes gene expression data and corresponding \cod
 }
 
 \usage{
-boothopach(data, hopachobj, I = 1000, hopachlabels = FALSE)
+boothopach(data, hopachobj, B = 1000, I, hopachlabels = FALSE)
 
-bootmedoids(data, medoids, d = "cosangle", I = 1000)
+bootmedoids(data, medoids, d = "cosangle", B = 1000, I)
 }
 
 \arguments{
   \item{data}{data matrix, data frame or exprSet of gene expression measurements. Each column corresponds to an array, and each row corresponds to a gene. All values must be numeric. Missing values are ignored.}
   \item{hopachobj}{output of the \code{hopach} function.}
-  \item{I}{number of bootstrap resampled data sets.}
+  \item{B}{number of bootstrap resampled data sets.}
+  \item{I}{number of bootstrap resampled data sets (deprecated, retaining til v1.2 for back compatibility).}
   \item{hopachlabels}{indicator of whether to use the hopach cluster labels 
 	\code{hopachobj$clustering$labels} for the row names (TRUE) versus the 
 	numbers 0 to 'k-1', where 'k' is the number of clusters (FALSE).}
