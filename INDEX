@@ -1,0 +1,6 @@
+distancematrix	computes a matrix of pair wise distances
+labels2mss	calculates mean or median split silhouette
+hopach	creates a HOPACH hierarchical tree
+boot.hopach	non-parametric bootstrap cluster membership probabilities
+correlationordering	correlation between pair wise distance and distance apart in a list
+plot.hopach	pseudo-color image of hopach ordered distance matrix
