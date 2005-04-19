@@ -5,7 +5,7 @@
 \title{functions to perform non-parametric bootstrap resampling of hopach clustering results}
 
 \description{
-The function \code{boothopach} takes gene expression data and corresponding \code{hopach} gene clustering output and performs non-parametric bootstrap resampling. The medoid genes (cluster profiles) from the original \code{hopach} clustering result are fixed, and in each bootstrap resampled data set, each gene is assigned to the closest medoid. The proportion of bootstrap samples in which each gene appears in each cluster is an estimate of the gene's membership in each cluster. These membership probabilities can be viewed as a "fuzzy" clustering result. The function \code{bootmedoids} take medoids and a distance function, rather than a hopach object, as input.
+The function \code{boothopach} takes data and corresponding \code{hopach} clustering output and performs non-parametric bootstrap resampling. The medoids (cluster profiles) from the original \code{hopach} clustering result are fixed, and in each bootstrap resampled data set, each element is assigned to the closest medoid. The proportion of bootstrap samples in which each element appears in each cluster is an estimate of the element's membership in each cluster. These membership probabilities can be viewed as a "fuzzy" clustering result. The function \code{bootmedoids} take medoids and a distance function, rather than a hopach object, as input.
 }
 
 \usage{
@@ -15,7 +15,7 @@ bootmedoids(data, medoids, d = "cosangle", B = 1000, I)
 }
 
 \arguments{
-  \item{data}{data matrix, data frame or exprSet of gene expression measurements. Each column corresponds to an array, and each row corresponds to a gene. All values must be numeric. Missing values are ignored.}
+  \item{data}{data matrix or data frame. All values must be numeric. Missing values are ignored.}
   \item{hopachobj}{output of the \code{hopach} function.}
   \item{B}{number of bootstrap resampled data sets.}
   \item{I}{number of bootstrap resampled data sets (deprecated, retaining til v1.2 for back compatibility).}

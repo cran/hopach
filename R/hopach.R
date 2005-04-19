@@ -1002,13 +1002,11 @@ newsplitcluster<-function(clust1,l1,id1,klow=2,khigh=2,medoid1,med2dist,right,di
 	#ord determines how elements are ordered within clusters: "co" is 
 	# using improveordering(), "own" is distance to their own medoid, and "nieghbor"
 	# is distance to the neighboring medoid (to the right). 
-hopach<-function(data,dmat=NULL,d="cosangle",clusters="best",K=16,kmax=9,khigh=9,coll="seq",newmed="medsil",mss="med",impr=0,initord="co",ord="own"){
-	if(inherits(data,"exprSet")) 
-		data<-exprs(data)
+hopach<-function(data,dmat=NULL,d="cosangle",clusters="best",K=15,kmax=9,khigh=9,coll="seq",newmed="medsil",mss="med",impr=0,initord="co",ord="own"){
 	data<-as.matrix(data)
-	if(K>16){
-		K<-16
-		warning("K set to 16 - can't do more than 16 levels")
+	if(K>15){
+		K<-15
+		warning("K set to 15 - can't do more than 15 splits")
 	}
 	if(K<1){
 		K<-1

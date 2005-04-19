@@ -1,6 +1,8 @@
-distancematrix	computes a matrix of pair wise distances
+distancematrix	computes a matrix of pairwise distances
 labels2mss	calculates mean or median split silhouette
 hopach	creates a HOPACH hierarchical tree
 boot.hopach	non-parametric bootstrap cluster membership probabilities
-correlationordering	correlation between pair wise distance and distance apart in a list
-plot.hopach	pseudo-color image of hopach ordered distance matrix
+boot2fuzzy	writes files for fuzzy clustering view in MapleTree
+hopach2tree	writes files for hierarchical clustering view in TreeView, MapleTree, GeneXPress
+correlationordering	correlation between pairwise distance and distance apart in a list
+prune		prunes the HOPACH tree to a given level
