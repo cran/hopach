@@ -1,8 +1,9 @@
 dplot<-function(dist,hopachobj,ord="final",col=heat.colors(12),main=NULL,xlab=NULL,ylab=NULL,labels=NULL,showclusters=TRUE,...){
 	dist<-as.matrix(dist)
 	p<-nrow(dist)
-	if(ord!="none")
-		main<-paste(main,"Ordered Distance Matrix",sep="\n")
+# Don't hard code main
+#	if(ord!="none")
+#		main<-paste(main,"Ordered Distance Matrix",sep="\n")
 	if(is.null(ylab))
 		ylab=""
 	if(is.null(xlab))
@@ -20,8 +21,8 @@ dplot<-function(dist,hopachobj,ord="final",col=heat.colors(12),main=NULL,xlab=NU
 	image(1:p,1:p,distplot[,p:1],main=main,xlab=xlab,ylab=ylab,axes=FALSE,col=col,...)
 	if(!is.null(labels)){
 		labels<-as.character(labels)
-		axis(2,labels=rev(labels[ordering]),at=1:p,cex.axis=0.75,col.axis=2,las=2)
-		axis(1,labels=labels[ordering],at=1:p,cex.axis=0.75,col.axis=2,las=2)
+		axis(2,labels=rev(labels[ordering]),at=1:p,cex.axis=0.75,col.axis=2,las=2,...)
+		axis(1,labels=labels[ordering],at=1:p,cex.axis=0.75,col.axis=2,las=2,...)
 	}
 	box()
 	if(showclusters)

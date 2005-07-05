@@ -219,7 +219,50 @@ msscheck<-function(dist,kmax=9,khigh=9,within="med",between="med",force=FALSE,ec
 	return(out)
 }
 
-#2. functions for making the tree#
+#2. Utility functions
+
+#counts the number of digits in label
+digits<-function(label){
+	label<-label[1]
+	count<-0
+	while(label>=1){
+		count<-count+1
+		label<-label/10
+	}
+	return(count)
+}
+
+#truncates labels to dig digits
+cutdigits<-function(labels,dig){
+	dl<-NULL
+	for(i in 1:length(labels)) 
+		dl[i]<-digits(labels[i])
+	df<-max(0,dl-dig)
+	trunc(labels/(10^df))		
+}
+
+#removes trailing zeros from labels
+cutzeros<-function(labels){
+	for(i in 1:length(labels)){
+		while(trunc(labels[i]/10)*10==labels[i]){
+			labels[i]<-labels[i]/10
+		}
+	}
+	return(labels)
+}
+
+#returns the number of non-zero digits in labels
+nonzeros<-function(labels){
+	for(i in 1:length(labels)){
+		while(trunc(labels[i]/10)*10==labels[i]){
+			labels[i]<-labels[i]/10
+		}
+		labels[i]<-digits(labels[i])
+	}
+	return(labels)	
+}
+
+#3. functions for making the tree#
 
 #a. msssplitcluster: splits a cluster# 
 	#clust1 is gene by subjects dataframe for cluster1
@@ -621,6 +664,7 @@ paircoll<-function(i,j,data,level,d="cosangle",dmat=NULL,newmed="medsil"){
 	if(labels[labels==labeli][1]/10==trunclabels[labels==labeli][1]){
 		labels[labels==labeli]<-labels[labels==labeli]+1
 		labels[labels==labelj]<-labels[labels==labelj]+1
+		block[i,1]<-block[i,1]+1
 	}
 	return(list(k,medoids,clussizes,labels,level[[5]],rbind(prevblock,block)))
 }
@@ -734,7 +778,6 @@ mssmulticollap<-function(data,level,khigh,d="cosangle",dmat=NULL,newmed="medsil"
 	#mssrundown() runs down the tree K levels with a stopping rule to 
 	# find the main clusters
 	#msscomplete() runs down the tree to the final level from any level
-	#digits() determines the level of the tree from the labels
 	#############################################################################################
 	#data is the data matrix
 	#K is the maximum number of levels to compute
@@ -822,15 +865,6 @@ msscomplete<-function(level,data,K=16,khigh=9,d="cosangle",dmat=NULL,within="med
 	return(level)
 }
 
-digits<-function(label){
-	label<-label[1]
-	count<-0
-	while(label>=1){
-		count<-count+1
-		label<-label/10
-	}
-	return(count)
-}
 
 #newnextlevel and newsplitcluster are needed in msscomplete to rundown 
 #completely without collapsing back to the main clusters.
@@ -1003,6 +1037,8 @@ newsplitcluster<-function(clust1,l1,id1,klow=2,khigh=2,medoid1,med2dist,right,di
 	# using improveordering(), "own" is distance to their own medoid, and "nieghbor"
 	# is distance to the neighboring medoid (to the right). 
 hopach<-function(data,dmat=NULL,d="cosangle",clusters="best",K=15,kmax=9,khigh=9,coll="seq",newmed="medsil",mss="med",impr=0,initord="co",ord="own"){
+	if(inherits(data,"exprSet")) 
+		data<-exprs(data)
 	data<-as.matrix(data)
 	if(K>15){
 		K<-15

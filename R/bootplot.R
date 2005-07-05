@@ -24,7 +24,8 @@ bootplot<-function(bootobj,hopachobj,ord="bootp",main=NULL,labels=NULL,showclust
 	bootobj<-bootobj[ordering,]
 	colors<-rainbow(k)
 	colors<-c(colors[seq(1,k,by=2)],colors[seq(2,k,by=2)])
-	main<-paste(main,"Barplot of Bootstrap Reappearance Proportions",sep="\n")
+# don't hard code main
+#	main<-paste(main,"Barplot of Bootstrap Reappearance Proportions",sep="\n")
 	if(is.null(labels))
 		labels<-dimnames(bootobj)[[1]]
 	par(oma=c(0,0,0,2))

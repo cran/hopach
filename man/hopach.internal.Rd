@@ -1,6 +1,8 @@
 \name{hopach-internal}
 
 \alias{collap}
+\alias{cutdigits}
+\alias{cutzeros}
 \alias{digits}
 \alias{msscollap}
 \alias{msscomplete}
@@ -11,6 +13,7 @@
 \alias{msssplitcluster}
 \alias{newnextlevel}
 \alias{newsplitcluster}
+\alias{nonzeros}
 \alias{orderelements}
 \alias{paircoll}
 
@@ -18,13 +21,16 @@
 
 \description{
 The Hierarchical Ordered Partitioning and Collapsing Hybrid (HOPACH)
-clustering algorithm builds a hierarchical tree of clusters. These 
-functions are used internally to create and order new levels of the tree.
+clustering algorithm builds a hierarchical tree of clusters. These functions are used internally to create and order new levels of the tree.
 }
 
 \usage{
 
 collap(data, level, d = "cosangle", dmat = NULL, newmed = "medsil")
+
+cutdigits(labels, dig)
+
+cutzeros(labels) 
 
 digits(label)
 
@@ -56,6 +62,8 @@ newnextlevel(data, prevlevel, dmat, klow = 2, khigh = 6)
 newsplitcluster(clust1, l1, id1, klow = 2, khigh = 2, medoid1, 
 med2dist, right, dist1) 
 
+nonzeros(labels)
+
 orderelements(level, data, rel = "own", d = "cosangle", dmat = NULL) 
 
 paircoll(i, j, data, level, d = "cosangle", dmat = NULL, 
@@ -82,7 +90,9 @@ newmed = "medsil")
 	by cluster size), "uwnn" (unweighted version of nearest neighbor, i.e. 
 	each cluster - rather than each element - gets equal weight), "center" 
 	(minimizer of average distance to the medoid).}
-\item{label}{A single label, e.g. one entry in the vector of labels encoding the history of each element through the hopach tree, with one digit for each level of the tree.}
+\item{labels}{A vector of labels encoding the history of each element through the hopach tree, with one digit for each level of the tree.}
+\item{dig}{Number of digits to remove from \code{labels}.}
+\item{label}{A single label, e.g. one entry in the vector \code{labels}.}
 \item{khigh}{An integer between 1 and 9 specifying the maximum number of children at each node in the tree when computing MSS. Can be different from kmax, though typically these are the same value.}
 \item{K}{A positive integer specifying the maximum number of levels in the tree. Must be 16 or less, due to computational limitations (overflow).}
 \item{kmax}{An integer between 1 and 9 specifying the maximum number of children at each node in the tree.}
