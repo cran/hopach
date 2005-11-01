@@ -1,5 +1,5 @@
 Package: hopach
-Version: 1.2.1
+Version: 1.4.0
 Title: Hierarchical Ordered Partitioning and Collapsing Hybrid (HOPACH)
 Author: Katherine S. Pollard <kpollard@soe.ucsc.edu>, with
 	Mark J. van der Laan <laan@stat.berkeley.edu>.
@@ -17,4 +17,4 @@ License: GPL version 2 or newer
 URL: http://www.r-project.org, 
 	http://www.stat.berkeley.edu/~laan/, 
 	http://lowelab.ucsc.edu/katie/
-Packaged: Tue Jul  5 12:44:30 2005; kpollard
+Packaged: Tue Nov  1 13:26:26 2005; kpollard
