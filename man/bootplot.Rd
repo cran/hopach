@@ -41,7 +41,7 @@ van der Laan, M.J. and Pollard, K.S. A new algorithm for hybrid hierarchical clu
 
 }
 
-\author{Katherine S. Pollard <kpollard@soe.ucsc.edu>}
+\author{Katherine S. Pollard <kpollard@wald.ucdavis.edu>}
 
 \note{Thank you to Sandrine Dudoit <sandrine@stat.berkeley.edu> for her input and to Jenny Bryan for the original clusplot code.}
 
