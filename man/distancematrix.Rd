@@ -49,6 +49,16 @@ vectmatrix(index, p)
   \item{p}{number of elements, e.g. the number of rows in a distance matrix.}
 }
 
+\details{
+For cosine-angle and correlation (and their absolute values) these 
+functions return the square root of the usual distance, for example
+as computed by the dist() function. Typically, this transformation makes
+the dissimilarity correspond more closely with the norm. Also, the 
+Euclidean distance is standardized by the sample size, so that the values
+produced are equal to the values from the dist() function divided by
+sqrt(n).
+}
+
 \value{
 	For \code{distancematrix}, a matrix of all pair wise distances between
 	rows of 'X'. The value in row 'j' and column 'i' is the distance

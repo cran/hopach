@@ -53,6 +53,15 @@ vdissabscor(X, y, na.rm = TRUE)
 
 \details{
 Different choices of distance metric are discussed in the references. Briefly, Euclidean distance (\code{disseuclid}) defines two variables to be close if they are similar in magnitude across observations. Correlation distance (\code{disscor}), in contrast, defines similarity to mean having the same pattern, but not necessarily the same magnitude. Cosine-angle (\code{disscosangle}) distance is a correlation distance that also accounts for magnitude. Cosine-angle distance is also known as uncentered correlation distance. The distance metrics with 'abs' in their names are absolute versions of each metric; the absolute value is applied to the data before computing the distance.
+
+For cosine-angle and correlation (and their absolute values) these
+functions return the square root of the usual distance, for example
+as computed by the dist() function. Typically, this transformation makes
+the dissimilarity correspond more closely with the norm. Also, the 
+Euclidean distance is standardized by the sample size, so that the values
+produced are equal to the values from the dist() function divided by
+sqrt(n).
+
 }
 
 \value{

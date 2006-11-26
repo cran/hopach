@@ -18,7 +18,7 @@ disscosangle<-function(X,na.rm=TRUE){
 	else
 		N<-1
 	out<-rowSums(X^2)
-	out<-matrix(1,nrow=p,ncol=p)-N*(X%*%t(X))/sqrt(out%*%t(out))
+	out<-1-N*tcrossprod(X)/sqrt(tcrossprod(out))
 	diag(out)<-0
 	suppressWarnings(out<-sqrt(out))
 	out[out=="NaN"]<-0
@@ -41,7 +41,7 @@ dissabscosangle<-function(X,na.rm=TRUE){
 	else
 		N<-1
 	out<-rowSums(X^2)
-	out<-matrix(1,nrow=p,ncol=p)-abs(N*(X%*%t(X))/sqrt(out%*%t(out)))
+	out<-1-abs(N*tcrossprod(X)/sqrt(tcrossprod(out)))
 	diag(out)<-0
 	suppressWarnings(out<-sqrt(out))
 	out[out=="NaN"]<-0
@@ -104,7 +104,7 @@ disscor<-function(X,na.rm=TRUE){
 		na<-"pairwise.complete.obs"
 	else
 		na<-"all.obs"
-	out<-matrix(rep(1,p*p),nrow=p,ncol=p)-cor(t(X),use=na)
+	out<-1-cor(t(X),use=na)
 	diag(out)<-0
 	suppressWarnings(out<-sqrt(out))
 	out[out=="NaN"]<-0
@@ -120,7 +120,7 @@ dissabscor<-function(X,na.rm=TRUE){
 		na<-"pairwise.complete.obs"
 	else
 		na<-"all.obs"
-	out<-matrix(rep(1,p*p),nrow=p,ncol=p)-abs(cor(t(X),use=na))
+	out<-1-abs(cor(t(X),use=na))
 	diag(out)<-0
 	suppressWarnings(out<-sqrt(out))
 	out[out=="NaN"]<-0
