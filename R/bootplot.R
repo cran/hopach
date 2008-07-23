@@ -7,12 +7,13 @@ bootplot<-function(bootobj,hopachobj,ord="bootp",main=NULL,labels=NULL,showclust
 		start<-1
 		stop<-hopachobj$clust$sizes[1]
 		set<-ordering[start:stop]
-		ordering[start:stop]<-set[rev(order(bootobj[set,1]))]
+		#ordering[start:stop]<-set[rev(order(bootobj[set,1]))]
+		ordering[start:stop]<-set[order(bootobj[set,1], decreasing = TRUE)]
 		for(i in 2:hopachobj$clust$k){
 			start<-stop+1
 			stop<-cumsum(hopachobj$clust$sizes)[i]
 			set<-ordering[start:stop]
-			ordering[start:stop]<-set[rev(order(bootobj[set,i]))]	
+			ordering[start:stop]<-set[order(bootobj[set,i], decreasing = TRUE )]	
 		}
 	}
 	if(ord=="final")

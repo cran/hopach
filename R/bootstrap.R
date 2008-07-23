@@ -1,5 +1,7 @@
 ## FIXME:  remove arg I after version 1.2
 bootmedoids<-function(data,medoids,d="cosangle",B=1000,I){
+	if(inherits(data,"ExpressionSet")) 
+		data<-exprs(data)
 	data<-as.matrix(data)
 	p<-length(data[,1])
 	n<-length(data[1,])
@@ -30,6 +32,8 @@ bootmedoids<-function(data,medoids,d="cosangle",B=1000,I){
 }
 
 boothopach<-function(data,hopachobj,B=1000,I,hopachlabels=FALSE){
+	if(inherits(data,"ExpressionSet")) 
+		data<-exprs(data)
 	data<-as.matrix(data)
 	p<-length(data[,1])
 	n<-length(data[1,])

@@ -1,9 +1,7 @@
 dplot<-function(dist,hopachobj,ord="final",col=heat.colors(12),main=NULL,xlab=NULL,ylab=NULL,labels=NULL,showclusters=TRUE,...){
-	dist<-as.matrix(dist)
+	if( !is.matrix(dist) )
+		dist <- as.matrix(dist) 
 	p<-nrow(dist)
-# Don't hard code main
-#	if(ord!="none")
-#		main<-paste(main,"Ordered Distance Matrix",sep="\n")
 	if(is.null(ylab))
 		ylab=""
 	if(is.null(xlab))
@@ -14,7 +12,7 @@ dplot<-function(dist,hopachobj,ord="final",col=heat.colors(12),main=NULL,xlab=NU
 	if(ord=="final")
 		ordering<-hopachobj$final$ord
 	if(ord=="cluster")
-			ordering<-hopachobj$clustering$ord
+		ordering<-hopachobj$clustering$ord
 	distplot<-dist[ordering,ordering]
 	diag(distplot)<-min(dist[upper.tri(dist)])
 	par(mfrow=c(1,1),pty="s")

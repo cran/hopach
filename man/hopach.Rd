@@ -18,13 +18,13 @@ the tree down to produce a final ordered list of the elements.
 \usage{
 hopach(data, dmat = NULL, d = "cosangle", clusters = "best", K = 15, 
 kmax = 9, khigh = 9, coll = "seq", newmed = "medsil", mss = "med", 
-impr = 0, initord = "co", ord = "own")
+impr = 0, initord = "co", ord = "own", verbose=FALSE)
 }
 
 \arguments{
-  \item{data}{data matrix or data frame. All values must be numeric. Missing values are ignored.}
-  \item{dmat}{matrix of pair wise distances between all elements. All values must be
-	numeric, and missing values are not allowed. If NULL, this matrix is computed 
+  \item{data}{data matrix, data frame or exprSet of gene expression measurements. Typically, each column corresponds to an array, and each row corresponds to a gene. For clustering arrays, the arrays appear in the rows and the genes in the columns. All values must be numeric. Missing values are ignored.}
+  \item{dmat}{matrix or \code{hdist} object of pair wise distances between all genes (arrays). All values 
+	must be numeric, and missing values are not allowed. If NULL, this matrix is computed 
 	using the metric specified by \code{d}. If a matrix is provided, the user is
 	responsible for ensuring that the metric used agrees with \code{d}.}
   \item{d}{character string specifying the metric to be used for calculating 
@@ -79,6 +79,7 @@ impr = 0, initord = "co", ord = "own")
 	from cluster medoid with medoid first, i.e. leftmost), "neighbor" (order based on
 	distance to the medoid of the next cluster to the right), or "co" (maximize
 	correlation ordering - can be slow for large clusters!).}
+  \item{verbose}{If \code{TRUE} then verbose output is printed.}
 }
 
 \details{
@@ -101,13 +102,12 @@ collapse at each level, and (iii) identify the first level of the tree with maxi
 homogeneous clusters. In each case, the goal is to minimize MSS, which is a measure of
 cluster heterogeneity described in http://www.bepress.com/ucbbiostat/paper107/. 
 
-Note that the correlation and cosine-angle distances (plus their
-absolute values) used for clustering in hopach are the square roots
-of the usual distances. Typically, this transformation makes the
-dissimilarity correspond more closely with the norm. Also, the
-Euclidean distance is standardized by the sample size, so that the values
-produced are equal to the values from the dist() function divided by
-sqrt(n). See ? distancematrix().
+In hopach versions <2.0.0, these functions returned the square root of 
+the usual distance for \code{d="cosangle"}, \code{d="abscosangle"}, 
+\code{d="cor"}, and \code{d="abscor"}. Typically, this transformation makes
+the dissimilarity correspond more closely with the norm. In order to 
+agree with the \code{dist} function, the square root is no longer used 
+in versions >=2.0.0. See ? distancematrix(). 
 
 }
 
@@ -183,12 +183,15 @@ van der Laan, M.J. and Pollard, K.S. A new algorithm for hybrid hierarchical clu
 
 Kaufman, L. and Rousseeuw, P.J. (1990). Finding Groups in Data: An Introduction to Cluster Analysis. Wiley, New York.
 
-Thank you to Karen Vranizan <vranizan@uclink.berkeley.edu> for her input
 }
 
-\author{Katherine S. Pollard <kpollard@wald.ucdavis.edu> and Mark J. van der Laan <laan@stat.berkeley.edu>}
+\author{Katherine S. Pollard <kpollard@wald.ucdavis.edu> and Mark J. van der Laan 
+<laan@stat.berkeley.edu>, with Greg Wall}
 
-\seealso{\code{\link{distancematrix}}, \code{\link{labelstomss}}, \code{\link{boothopach}}, \code{pam}}
+\note{Thank you to Karen Vranizan <vranizan@uclink.berkeley.edu> for her input
+}
+
+\seealso{\code{\link{distancematrix}}, \code{\link{labelstomss}}, \code{\link{boothopach}}, \code{pam}, \code{makeoutput}}
 
 \examples{
 

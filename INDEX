@@ -3,6 +3,11 @@ labels2mss	calculates mean or median split silhouette
 hopach	creates a HOPACH hierarchical tree
 boot.hopach	non-parametric bootstrap cluster membership probabilities
 boot2fuzzy	writes files for fuzzy clustering view in MapleTree
-hopach2tree	writes files for hierarchical clustering view in TreeView, MapleTree, GeneXPress
+bootplot	plots a colored barplot of clustering membership values
+dplot	plots heat map of distance matrix
+hopach2tree	writes files for hierarchical clustering view in Treeview, MapleTree, GeneXPress
 correlationordering	correlation between pairwise distance and distance apart in a list
 prune		prunes the HOPACH tree to a given level
+makeoutput	writes clustering results to a file
+
+

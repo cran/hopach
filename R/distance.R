@@ -1,133 +1,6 @@
 #Distance matrix related functions
 
-#a. compute distances between all rows of a matrix#
-
-#cosine-angle
-disscosangle<-function(X,na.rm=TRUE){
-	if(!is.matrix(X))
-		stop("arg to disscosangle() must be a matrix")
-	dX<-dim(X)
-	p<-dX[1]
-	n<-dX[2]
-	if(na.rm){
-		N<-rowSums(!is.na(X))
-		N2<-(!is.na(X))%*%t(!is.na(X))
-		X[is.na(X)]<-0
-		N<-sqrt(N%*%t(N))/N2
-	}
-	else
-		N<-1
-	out<-rowSums(X^2)
-	out<-1-N*tcrossprod(X)/sqrt(tcrossprod(out))
-	diag(out)<-0
-	suppressWarnings(out<-sqrt(out))
-	out[out=="NaN"]<-0
-	return(out)
-}
-
-#absolute cosine-angle
-dissabscosangle<-function(X,na.rm=TRUE){
-	if(!is.matrix(X))
-		stop("arg to dissabscosangle() must be a matrix")
-	dX<-dim(X)
-	p<-dX[1]
-	n<-dX[2]
-	if(na.rm){
-		N<-rowSums(!is.na(X))
-		N2<-(!is.na(X))%*%t(!is.na(X))
-		X[is.na(X)]<-0
-		N<-sqrt(N%*%t(N))/N2
-	}
-	else
-		N<-1
-	out<-rowSums(X^2)
-	out<-1-abs(N*tcrossprod(X)/sqrt(tcrossprod(out)))
-	diag(out)<-0
-	suppressWarnings(out<-sqrt(out))
-	out[out=="NaN"]<-0
-	return(out)
-}
-
-#euclidean
-#note: disseuclid(X)=daisy(X)/sqrt(dim(X)[2])
-disseuclid<-function(X,na.rm=TRUE){
-	if(!is.matrix(X))
-		stop("arg to disseuclid() must be a matrix")
-	dX<-dim(X)
-	p<-dX[1]
-	n<-dX[2]
-	if(na.rm){
-		N<-rowSums(!is.na(X))
-		N2<-(!is.na(X))%*%t(!is.na(X))
-		X[is.na(X)]<-0
-		out<-matrix(rep(rowSums(X^2)/N,p),ncol=p)+t(matrix(rep(rowSums(X^2)/N,p),ncol=p))-2*X%*%t(X)/N2	
-	}
-        else
-		out<-matrix(rep(rowMeans(X^2),p),ncol=p)+t(matrix(rep(rowMeans(X^2),p),ncol=p))-2*X%*%t(X)/n
-	diag(out)<-0
-	suppressWarnings(out<-sqrt(out))
-	out[out=="NaN"]<-0
-	return(out)
-}
-
-#absolute euclidean
-dissabseuclid<-function(X,na.rm=TRUE){    
-	if(!is.matrix(X))
-		stop("arg to dissabseuclid() must be a matrix")
-	dX<-dim(X)
-	p<-dX[1]
-	n<-dX[2]
-	if(na.rm){
-		N<-rowSums(!is.na(X))		
-		N2<-(!is.na(X))%*%t(!is.na(X))
-		X[is.na(X)]<-0
-		out1<-matrix(rep(rowSums(X^2)/N,p),ncol=p)+t(matrix(rep(rowSums(X^2)/N,p),ncol=p))-2*X%*%t(X)/N2	
-		out2<-matrix(rep(rowSums(X^2)/N,p),ncol=p)+t(matrix(rep(rowSums(X^2)/N,p),ncol=p))+2*X%*%t(X)/N2
-	}
-	else{
-	        out1<-matrix(rep(rowMeans(X^2),p),ncol=p)+t(matrix(rep(rowMeans(X^2),p),ncol=p))-2*X%*%t(X)/n
-	        out2<-matrix(rep(rowMeans(X^2),p),ncol=p)+t(matrix(rep(rowMeans(X^2),p),ncol=p))+2*X%*%t(X)/n
-	}
-        out1<-pmin(out1,out2)
-        diag(out1)<-0
-        suppressWarnings(out1<-sqrt(out1))
- 	out1[out1=="NaN"]<-0
-	return(out1)
-}
-
-#correlation
-disscor<-function(X,na.rm=TRUE){
-	if(!is.matrix(X))
-		stop("arg to disscor() must be a matrix")
-	p<-dim(X)[1]
-	if(na.rm)
-		na<-"pairwise.complete.obs"
-	else
-		na<-"all.obs"
-	out<-1-cor(t(X),use=na)
-	diag(out)<-0
-	suppressWarnings(out<-sqrt(out))
-	out[out=="NaN"]<-0
-	return(out)
-}
-
-#absolute correlation
-dissabscor<-function(X,na.rm=TRUE){
-	if(!is.matrix(X))
-		stop("arg to dissabscor() must be a matrix")
-	p<-dim(X)[1]
-	if(na.rm)
-		na<-"pairwise.complete.obs"
-	else
-		na<-"all.obs"
-	out<-1-abs(cor(t(X),use=na))
-	diag(out)<-0
-	suppressWarnings(out<-sqrt(out))
-	out[out=="NaN"]<-0
-	return(out)
-}
-
-#b. compute distances between rows of a matrix and a vector#
+#a. compute distances between rows of a matrix and a vector#
 
 #cosine-angle
 vdisscosangle<-function(X,y,na.rm=TRUE){
@@ -276,12 +149,17 @@ vdissabscor<-function(X,y,na.rm=TRUE){
 #makes a distance matrix from X using distance d#
 distancematrix<-function(X,d,na.rm=TRUE){
 	X<-as.matrix(X)
-	if (d=="cosangle") return(disscosangle(X,na.rm))
-	if (d=="abscosangle") return(dissabscosangle(X,na.rm))
+
 	if (d=="euclid") return(disseuclid(X,na.rm))
-	if (d=="abseuclid") return(dissabseuclid(X,na.rm))
+	#if (d=="abseuclid") return(dissabseuclid(X,na.rm))
+
 	if (d=="cor") return(disscor(X,na.rm))
 	if (d=="abscor") return(dissabscor(X,na.rm))
+
+	if (d=="cosangle") return(disscosangle(X,na.rm))
+	if (d=="abscosangle") return(dissabscosangle(X,na.rm))
+
+
 	#insert your own distance function here
 	stop("Distance metric ",d," not available")
 }
@@ -302,6 +180,7 @@ distancevector<-function(X,y,d,na.rm=TRUE){
 
 #d. conversions#
 
+# could become obsolete... 
 #converts distance matrix to a vector#
 dissvector<-function(M){
 	if(!is.matrix(M))
@@ -351,23 +230,14 @@ vectmatrix<-function(index,p){
 
 #computes correlation ordering
 correlationordering<-function(dist){
-	if(!is.matrix(dist))
-		stop("arg to correlationordering() must be a matrix")
-	p<-length(dist[1,])
-	if(p!=length(dist[,1]))
-		stop("arg to correlationordering() not a square matrix")
-	a<-dissvector(dist)
+	p<-dist@Size
+	a<-dist@Data
 	b<-dissvector(abs(matrix(1:p,nrow=p,ncol=p,byrow=TRUE)-matrix(1:p,nrow=p,ncol=p)))
 	return(cor(a,b))
 }
 
-#optimizes correlation ordering
 improveordering<-function(dist,echo=FALSE){
-	if(!is.matrix(dist))
-		stop("arg to improveordering() must be a matrix")
-	p<-length(dist[1,])
-	if(p!=length(dist[,1]))
-		stop("arg to improveordering() not a square matrix")
+	p<-dist@Size
 	v<-correlationordering(dist)
 	if(echo)
 		cat("Old order:",v,"\n")
@@ -398,5 +268,63 @@ improveordering<-function(dist,echo=FALSE){
 			cat("New order:",correlationordering(dist[neword,neword]),"\n")
 	}
 	return(neword)		
+}
+
+##################################################################
+#          G. Wall : C Versions of Distance Functions            #
+##################################################################
+
+# -------------------------- euclidean ------------------------- #
+
+disseuclid<-function(X,na.rm=TRUE){
+	if(!is.matrix(X)){
+		stop(paste(sQuote("X"), "not a matrix"))
+	}
+
+	out <- dist(X, method = "euclidean") 
+	dmat <- new("hdist", Data=out[1:length(out)], Size=attr(out,"Size"), Labels=(1:(attr(out,"Size"))), Call=as.character(attr(out,"call")[3]) ) 
+	return(dmat)
+}
+
+# ------------------------- correlation ------------------------ #
+disscor<-function(X,na.rm=TRUE){
+	if(!is.matrix(X))
+		stop(paste(sQuote("X"), "not a matrix"))
+
+	out <- .Call("R_disscor",as.vector(X), as.numeric(dim(X)[1]),as.numeric(dim(X)[2]), as.logical(na.rm) )	
+	dmat <- new("hdist", Data=out, Size=dim(X)[1], Labels = (1:(dim(X)[1])), Call="cor")
+	return(dmat)
+}
+
+# -------------------- absolute correlation -------------------- #
+dissabscor<-function(X,na.rm=TRUE){
+	if(!is.matrix(X))
+		stop("arg to disscor() must be a matrix")
+
+	out <- .Call("R_dissabscor",as.vector(X), as.numeric(dim(X)[1]),as.numeric(dim(X)[2]), as.logical(na.rm) )
+	dmat <- new("hdist", Data=out, Size=dim(X)[1], Labels = (1:(dim(X)[1])), Call="abscor")
+
+	return(dmat)
+}
+
+# ------------------------ cosine angle ------------------------ #
+disscosangle<-function(X, na.rm=TRUE){
+	if(!is.matrix(X))
+		stop("arg to disscosangle() must be a matrix")
+		
+	out <- .Call("R_disscosangle", as.vector(X), as.numeric(dim(X)[1]),as.numeric(dim(X)[2]), as.logical(na.rm) )
+	dmat <- new("hdist", Data=out, Size=dim(X)[1], Labels = (1:(dim(X)[1])), Call="cosangle")
+
+	return(dmat)
+}
+
+# -------------------- absolute cosine angle ------------------- #
+dissabscosangle<-function(X, na.rm=TRUE){
+	if(!is.matrix(X))
+		stop("arg to disscosangle() must be a matrix")
+		
+	out <- .Call("R_dissabscosangle", as.vector(X), as.numeric(dim(X)[1]),as.numeric(dim(X)[2]), as.logical(na.rm) )
+	dmat <- new("hdist", Data=out, Size=dim(X)[1], Labels = (1:(dim(X)[1])), Call="abscosangle")
+	return(dmat)
 }
 

@@ -40,12 +40,11 @@ xlab = NULL, ylab = NULL, labels = NULL, showclusters = TRUE, ...)
 van der Laan, M.J. and Pollard, K.S. A new algorithm for hybrid hierarchical clustering with visualization and the bootstrap. Journal of Statistical Planning and Inference, 2003, 117, pp. 275-303.
 
 \url{http://www.stat.berkeley.edu/~laan/Research/Research_subpages/Papers/hopach.pdf}
-
-Thank you to Sandrine Dudoit <sandrine@stat.berkeley.edu> for her input.
-
 }
 
-\author{Katherine S. Pollard <kpollard@wald.ucdavis.edu> and Mark J. van der Laan <laan@stat.berkeley.edu>}
+\author{Katherine S. Pollard <kpollard@soe.ucsc.edu> and Mark J. van der Laan <laan@stat.berkeley.edu>}
+
+\note{Thank you to Sandrine Dudoit <sandrine@stat.berkeley.edu> for her input.}
 
 \seealso{\code{\link{distancematrix}}, \code{\link{hopach}}, \code{\link{image}}}
 

@@ -10,13 +10,15 @@
 
 \description{
 The function \code{distancematrix} is applied to a matrix of data to
-compute the pair wise distances between all rows of the matrix. The
+compute the pair wise distances between all rows of the matrix. In
+hopach versions >= 2.0.0 these distance functions are calculated in C,
+rather than R, to improve run time performance.
 function \code{distancevector} is applied to a matrix and a vector
 to compute the pair wise distances between each row of the matrix and 
 the vector. Both functions allow different choices of distance metric.
 The functions \code{dissmatrix} and \code{dissvector} allow one to 
-convert between a distance matrix and a vector of the upper triangle. 
-The function \code{vectmatrix} is used internally.
+convert between a distance matrix and a vector of the upper triangle. The 
+function \code{vectmatrix} is used internally.
 }
 
 \usage{
@@ -50,20 +52,38 @@ vectmatrix(index, p)
 }
 
 \details{
-For cosine-angle and correlation (and their absolute values) these 
-functions return the square root of the usual distance, for example
-as computed by the dist() function. Typically, this transformation makes
-the dissimilarity correspond more closely with the norm. Also, the 
-Euclidean distance is standardized by the sample size, so that the values
-produced are equal to the values from the dist() function divided by
-sqrt(n).
+In hopach versions <2.0.0, these functions returned the square root of 
+the usual distance for \code{d="cosangle"}, \code{d="abscosangle"}, 
+\code{d="cor"}, and \code{d="abscor"}. Typically, this transformation makes
+the dissimilarity correspond more closely with the norm. In order to 
+agree with the \code{dist} function, the square root is no longer used 
+in versions >=2.0.0. 
 }
 
 \value{
-	For \code{distancematrix}, a matrix of all pair wise distances between
-	rows of 'X'. The value in row 'j' and column 'i' is the distance
-	between rows 'i' and 'j'. The matrix is symmetric, and can be converted to
-	a vector containing the upper triangle using the function \code{dissvector}. 
+	For versions >= 2.0.0 \code{distancematrix}, a \code{hdist} 
+	object of of all pair wise distances between the rows of the data matrix 'X',
+	i.e. the value of \code{hdist[i,j]} is the distance between rows 'i' and 'j'
+	of 'X', as defined by 'd'.  A \code{hdist} object is an S4 class containing 
+	four slots:
+	\item{Data}{ representing the lower triangle of the symmetric distance matrix.
+	
+	}
+	\item{Size}{ the number of objects (i.e. rows of the data 
+matrix).
+	}
+	\item{Labels}{ labels for the objects, usually the numbers 1 to 
+Size.
+	}
+	\item{Call}{ the distance used in the call to 
+\code{distancematrix}.	}
+
+	A hdist object and can be converted to a matrix using \code{as.matrix(hdist)}.
+	(See \code{hdist} for more details.)
+
+	For \code{distancevector}, a vector of all pair wise distances between
+	rows of 'X' and the vector 'y'. Entry 'j' is the distance between row 'j'
+	of 'X' and the vector 'y'.
 
 	For \code{distancevector}, a vector of all pair wise distances between
 	rows of 'X' and the vector 'y'. Entry 'j' is the distance between row 'j'
@@ -85,9 +105,11 @@ van der Laan, M.J. and Pollard, K.S. A new algorithm for hybrid hierarchical clu
 \url{http://www.stat.berkeley.edu/~laan/Research/Research_subpages/Papers/hopach.pdf}
 }
 
-\author{Katherine S. Pollard <kpollard@wald.ucdavis.edu> and Mark J. van der Laan <laan@stat.berkeley.edu>}
+\author{Katherine S. Pollard <kpollard@soe.ucsc.edu> and Mark J. van der 
+Laan <laan@stat.berkeley.edu>, with Greg Walll}
 
-\section{Warning }{The correlation and absolute correlation distance functions call the \code{cor} function, and will therefore fail if there are missing values in the data and na.rm!=TRUE.
+\section{Warning }{The 
+correlation and absolute correlation distance functions call the \code{cor} function, and will therefore fail if there are missing values in the data and na.rm!=TRUE.
 }
 
 \seealso{\code{\link{hopach}}, \code{\link{correlationordering}}, \code{\link{disscosangle}}}
@@ -95,7 +117,8 @@ van der Laan, M.J. and Pollard, K.S. A new algorithm for hybrid hierarchical clu
 \examples{
 mydata<-matrix(rnorm(50),nrow=10)
 deuclid<-distancematrix(mydata,d="euclid")
-vdeuclid<-dissvector(deuclid)
+# old method vdeuclid<-dissvector(deuclid)
+vdeuclid<-deuclid@Data
 ddaisy<-daisy(mydata)
 vdeuclid
 ddaisy/sqrt(length(mydata[1,]))
@@ -105,7 +128,8 @@ d2<-distancevector(mydata,mydata[1,],d="abscosangle")
 d1[1,]
 d2 #equal to d1[1,]
 
-d3<-dissvector(d1)
+# old method d3<-dissvector(d1)
+d3<-d1@Data
 pair<-vectmatrix(5,10)
 d1[pair[1],pair[2]]
 d3[5]

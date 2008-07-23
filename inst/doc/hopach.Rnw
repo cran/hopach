@@ -1,0 +1,189 @@
+%
+% NOTE -- ONLY EDIT THE .Rnw FILE!!!  The .tex file is
+% likely to be overwritten.
+%
+% \VignetteIndexEntry{hopach}
+% \VignetteDepends{tools, cluster}
+% \VignetteKeywords{Expression Analysis, Clustering}
+% \VignettePackage{hopach}
+
+\documentclass[11pt]{article}
+
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+\newcommand{\Rfunarg}[1]{{\textit{#1}}}
+
+\usepackage{amsmath,epsfig,fullpage}
+\usepackage[authoryear,round]{natbib}
+\usepackage{hyperref}
+
+\parindent 0in
+
+\bibliographystyle{abbrvnat}
+
+\begin{document}
+
+\title{Bioconductor's hopach package}
+
+\author{Katherine S. Pollard$^1$ and Mark J. van der Laan$^2$}
+
+\maketitle
+
+\begin{center}
+1. Center for Biomolecular Science and Engineering, University of California, Santa Cruz, \url{ http://lowelab.ucsc.edu/katie/}\\
+2. Department of Statistics and Division of Biostatistics, University of California, Berkeley, \url{ http://www.stat.berkeley.edu/~laan/}\\
+\end{center}
+
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Overview}
+
+This document provides a tutorial for the \Rpackage{hopach} package.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Getting started}
+
+{\bf Installing the package.} To install the \Rpackage{hopach} package, first download the appropriate file for your platform from the Bioconductor website \url{http://www.bioconductor.org/}. For Windows, start R and select the \texttt{Packages} menu, then \texttt{Install package from local zip file...}.  Find and highlight the location of the zip file and click on {\tt open}. For Linux/Unix, use the usual command \texttt{R CMD INSTALL} or set the option \texttt{CRAN} to your nearest mirror site and use the command \texttt{install.packages} from within an R session.\\
+
+{\bf Loading the package.} To load the \Rpackage{hopach} package in your R session, type \texttt{library(hopach)}.\\
+
+{\bf Help files.}  Detailed information on \Rpackage{hopach} package functions can be obtained in the help files. For example, to view the help file for the function \texttt{distancematrix} in a browser, use \texttt{help.start} followed by \texttt{? distancematrix}.\\
+
+{\bf Case study.} We demonstrate the functionality of this R package using gene expression data from the AML/ALL microarray gene expression experiments published by Golub \textit{et al.} \cite{Golub}. These data are included as part of the \Rpackage{hopach} package. To load the \texttt{golub} dataset, use \texttt{data(golub)}. To view a description of the experiments and data, type \texttt{? golub}.\\
+
+{\bf Sweave.} This document was generated using the \Rfunction{Sweave} function from the R \Rpackage{tools} package. The source (.Rnw) file is in the \texttt{/inst/doc} directory of the \Rpackage{hopach} package.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+
+An important goal with large-scale gene expression studies is to find biologically important subsets and clusters of genes. We have developed a hybrid clustering method, Hierarchical Ordered Partitioning And Collapsing Hybrid (HOPACH), which builds a hierarchical tree of clusters \cite{hopach,hopach2}. The methodology combines the strengths of both partitioning and agglomerative clustering methods. At each node, a cluster is split into two or more smaller clusters with an enforced ordering of the clusters. Collapsing steps uniting the two closest clusters into one cluster are used to correct for errors made in the partitioning steps. The \Rfunction{hopach} function uses the median split silhouette (MSS) criteria \cite{jsm,sci} to automatically choose (i) the number of children at each node, (ii) which clusters to collapse, and (iii) the main clusters ("pruning" the tree to produce a partition of homogeneous clusters). An ordered list of genes (or arrays) is obtained by running down the tree completely to the final level. In this tutorial, we illustrate how to use many of functions in the \Rpackage{hopach} package.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{HOPACH Clustering of Genes}
+
+To load the necessary packages and the Golub data set: 
+
+<<golub,eval=TRUE,echo=TRUE,results=hide>>=
+library(hopach)
+data(golub)
+@
+
+Next, select a subset of interesting genes. Such a subset can be chosen in many ways, for example with the functions in the \Rpackage{genefilter} and \Rpackage{multtest} packages. For this analysis, we will simply take the 200 genes with highest variance across the arrays. In practice, one will typically use a larger data set. The small size was chosen here for demonstration purposes. 
+
+<<geneSelection,eval=TRUE,echo=TRUE>>=
+vars<-apply(golub,1,var)
+subset<-vars>quantile(vars,(nrow(golub)-200)/nrow(golub))
+golub.subset<-golub[subset,]
+dim(golub.subset)
+gnames.subset<-golub.gnames[subset,]
+@
+
+It is useful to compute the distance matrix before running \Rfunction{hopach}, because the distance matrix may be needed later in the analysis. Having a copy in hand saves computation time, particularly with larger data sets. The \Rfunarg{cosangle} distance metric is often a good choice for clustering genes.
+
+<<distance,eval=TRUE,echo=TRUE>>=
+gene.dist<-distancematrix(golub.subset,"cosangle")
+dim(gene.dist)
+@
+
+Now, run hopach. The algorithm will take some time to run.
+
+<<hopachGene,eval=TRUE,echo=TRUE>>=
+gene.hobj<-hopach(golub.subset,dmat=gene.dist)
+gene.hobj$clust$k  
+table(gene.hobj$clust$labels) 
+gene.hobj$clust$sizes 
+@
+
+The rows and columns of the distance matrix can be ordered according to the order of the genes in the final level of the hierarchical tree. Genes close to each other in the tree are similarly expressed, so the ordered distance matrix shows the clustering structure (See Figure \ref{image}). Clusters of similarly expressed genes appear as blocks on the diagonal of the matrix. With the default colors, red represents small distance and white large distance.
+
+<<dplot,fig=TRUE,prefix=FALSE,echo=TRUE,include=FALSE,eval=FALSE>>=
+dplot(gene.dist,gene.hobj,ord="final",main="Golub AML/ALL Data (1999): Gene Distance Matrix",showclusters=FALSE)  
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Bootstrap Resampling}
+
+In order to better understand the variability of the \Rfunction{hopach} clusters, we use the non-parametric bootstrap. The proportion of bootstrap resampled data sets that each gene falls into each of the clusters (fixed from the \Rfunction{hopach} clustering result) is an estimate of the membership of that gene in each cluster. This is a form of "fuzzy clustering". 
+
+<<bootstrap,eval=TRUE,echo=TRUE>>=
+bobj<-boothopach(golub.subset,gene.hobj,B=100)
+@
+
+The argument \Rfunarg{B} controls the number of bootstrap resmapled data sets used. The default value is \texttt{B=1000}, which represents a balance between precision and speed. For this example, we use only \texttt{B=100} so that it will not run too long. The \Rfunction{boothopach} function still takes some time to run. The bootstrap is a powerful, but computationally intensive, method. The \Rfunction{bootplot} function makes a barplot of the bootstrap reappearance proportions (See Figure \ref{barplot}). 
+
+<<bootplot,fig=TRUE,prefix=FALSE,echo=TRUE,include=FALSE,eval=FALSE>>=
+bootplot(bobj,gene.hobj,ord="bootp",main="Golub AML/ALL Data (1999)",showclusters=FALSE)
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{HOPACH Clustering of Arrays}
+
+The HOPACH algorithm can also be applied to cluster arrays, based on their expresion profiles across genes. In this AML/ALL data set, we actually know that the arrays come from two classes of patients.
+
+<<classes,eval=FALSE,echo=TRUE>>=
+table(golub.cl)
+@
+
+We will ignore the labels, and perform unsupervised clustering of the arrays using \Rfunction{hopach}. This analysis method differs from classification, because the class labels are not used and the subset of genes has not been chosen to best discriminate between the two classes of arrays. Hence, we do not necessarily expect the clustering to reproduce the class labels. This exploratory approach allows us to see what patterns there are in the data without using any information besides the subset of gene expression measurements. Euclidean distance is often a good choice for clustering arrays.
+
+<<hopachArray,eval=TRUE,echo=TRUE>>=
+array.hobj<-hopach(t(golub.subset),d="euclid")
+array.hobj$clust$k
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Output files}
+
+\subsection{Gene clustering and bootstrap results table}
+
+The \Rfunction{makeoutput} function is used to write a tab delimited text file that can be opened in a spreadsheet application or text editor. The file will contain the \Rfunction{hopach} clustering results, plus possibly the corresponding bootstrap results, if these are provided. The argument \Rfunarg{gene.names} can be used to insert additional gene annotation.
+
+<<output,echo=TRUE,eval=FALSE>>=
+makeoutput(golub.subset,gene.hobj,bobj,file="Golub.out",gene.names=gnames.subset[,3])
+@
+
+\subsection{Bootstrap fuzzy clustering in MapleTree}
+
+The MapleTree software \url{http://mapletree.sourceforge.net/} is an open source, cross-platform, visualization tool to graphically browse results of cluster analyses. The \Rfunction{boot2fuzzy} function takes the gene expression data, plus corresponding \Rfunction{hopach} clustering output and bootstrap resampling output, and writes the (.cdt, .fct, and .mb) files needed to view these "fuzzy clustering" results in MapleTree.
+
+<<fuzzy,echo=TRUE,eval=FALSE>>=
+boot2fuzzy(golub.subset,bobj,gene.hobj,array.hobj,file="GolubFuzzy",gene.names=gnames.subset[,3]) 
+@
+
+The three generated files can be opened in MapleTree by going to the \texttt{Load} menu and then \texttt{Fuzzy Clustering Data}. The heat map contains only the medoids genes (cluster profiles). Double clicking on a medoid opens a zoom window for that cluster, with a heat map of all genes ordered by their bootstrap estimated memberships in that cluster (highest memebership first).
+
+\subsection{HOPACH hierarchical clustering in MapleTree}
+
+The MapleTree software can also be used to view HOPACH hierarchical clustering results. The \Rfunction{hopach2tree} function takes the gene expression data, plus corresponding \Rfunction{hopach} clustering output for genes and/or arrays, and writes the (.cdt, .gtr, and .atr) files needed to view these hierarchical clustering results in MapleTree. These files can also be opened in other viewers such as TreeView \url{http://rana.lbl.gov/EisenSoftware.htm}, jtreeview \url{http://sourceforge.net/projects/jtreeview/}, and GeneXPress \url{http://genexpress.stanford.edu/}.
+
+<<hierarchical,echo=TRUE,eval=FALSE>>=
+hopach2tree(golub.subset,file="GolubTree",hopach.genes=gene.hobj,hopach.arrays=NULL,dist.genes=gene.dist,gene.names=gnames.subset[,3])  
+@
+
+The \Rfunction{hopach2tree} writes up to three text files to the current working directory (or path given by the \Rfunarg{file} argument). A .cdt file is always produced. When \Rfunarg{hopach.genes}$!=$NULL, a .gtr is produced, and gene clustering results can be viewed, including ordering the genes in the heat map according to the final level of the \Rfunction{hopach} tree and drawing the dendogram for hierarchical gene clustering. Similarly, when \Rfunarg{hopach.arrays}$!=$NULL, an .atr file is produced and array clustering results can be viewed. These files can be opened in MapleTree by going to the \texttt{Load} menu and then \texttt{HOPACH Clustering Data}. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\bibliography{hopach}
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=3in,height=3in,angle=0]{dplot}
+\end{center}
+\caption{The \Rfunction{dplot} function orders the rows and columns of the distance matrix according to the final level of the \Rfunction{hopach} hierarchical tree. Red represents small distance and white large distance.}
+\label{image}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=3in,height=3in,angle=0]{bootplot}
+\end{center}
+\caption{The \Rfunction{bootplot} function makes a barplot of the bootstrap reappearance proportions for each gene and each cluster. These proportions can be viewed as fuzzy cluster memberships. Every cluster is represented by a different color. The genes are ordered by \Rfunction{hopach} cluster, and then by bootstrap estimated membership within cluster on the vertical axis so that each gene is represented by a horizontal bar.}
+\label{barplot}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+ 

@@ -38,10 +38,10 @@ msscollap(data, level, khigh, d = "cosangle", dmat = NULL,
 newmed = "medsil", within = "med", between = "med", impr = 0)
 
 msscomplete(level, data, K = 16, khigh = 9, d = "cosangle", 
-dmat = NULL, within = "med", between = "med")
+dmat = NULL, within = "med", between = "med", verbose=FALSE)
 
 mssinitlevel(data, kmax = 9, khigh = 9, d = "cosangle", 
-dmat = NULL, within = "med", between = "med", ord = "co")
+dmat = NULL, within = "med", between = "med", ord = "co", verbose=FALSE)
 
 mssmulticollap(data, level, khigh, d = "cosangle", dmat = NULL, 
 newmed = "medsil", within = "med", between = "med", impr = 0)
@@ -52,7 +52,7 @@ within = "med", between = "med")
 mssrundown(data, K = 16, kmax = 9, khigh = 9, d = "cosangle", 
 dmat = NULL, initord = "co", coll = "seq", newmed = "medsil", 
 stop = TRUE, finish = FALSE, within = "med", between = "med", 
-impr = 0) 
+impr = 0, verbose = FALSE) 
 
 msssplitcluster(clust1, l1, id1, medoid1, med2dist, right, dist1, 
 kmax = 9, khigh = 9, within = "med", between = "med")
@@ -113,6 +113,7 @@ newmed = "medsil")
 \item{dist1}{The distance matrix for elements in \code{clust1}.}
 \item{rel}{A character string specifying how to order the elements within clusters. The options are "own" (order based on distance from cluster medoid with medoid first, i.e. leftmost), "neighbor" (order based on distance to the medoid of the next cluster to the right), or "co" (maximize correlation ordering - can be slow for large clusters!).}
 \item{i, j}{Indices of two clusters to be collapsed.}
+\item{verbose}{Indicates whether or not to print verbose output.}
 }
 
 \value{

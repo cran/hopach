@@ -43,7 +43,7 @@ van der Laan, M.J. and Pollard, K.S. A new algorithm for hybrid hierarchical clu
 
 }
 
-\author{Katherine S. Pollard <kpollard@wald.ucdavis.edu> and Mark J. van der Laan <laan@stat.berkeley.edu>}
+\author{Katherine S. Pollard <kpollard@soe.ucsc.edu> and Mark J. van der Laan <laan@stat.berkeley.edu>}
 
 \section{Warning }{The function \code{improveordering} can be very slow for more than about 50 elements. The method employed is a greedy, step-wise algorithm, in which sequentially swaps all pairs of elements and accepts any swap that improves correlation ordering. }
 
@@ -52,11 +52,11 @@ van der Laan, M.J. and Pollard, K.S. A new algorithm for hybrid hierarchical clu
 \examples{
 mydata<-matrix(rnorm(50),nrow=10)
 mydist<-distancematrix(mydata,d="euclid")
-image(mydist)
+image(as.matrix(mydist))
 correlationordering(mydist)
 neword<-improveordering(mydist,echo=TRUE)
 correlationordering(mydist[neword,neword])
-image(mydist[neword,neword])
+image(as.matrix(mydist[neword,neword]))
 }
 
 \keyword{multivariate}
