@@ -416,6 +416,12 @@ mssinitlevel<-function(data, kmax=9, khigh=9, d="cosangle", dmat=NULL,
 
 	p<-length(data[,1])
 
+        if(is.matrix(dmat))
+		dmat<-as.hdist(dmat)
+
+	else
+		dmat<-distancematrix(data,d=d)
+
 	if(dmat@Size != p)
 		stop("Data and distance matrix dimensions do not agree in mssinitlevel()")
 

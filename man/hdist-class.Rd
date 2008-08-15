@@ -67,7 +67,10 @@ van der Laan, M.J. and Pollard, K.S. A new algorithm for hybrid hierarchical clu
 
 Kaufman, L. and Rousseeuw, P.J. (1990). Finding Groups in Data: An Introduction to Cluster Analysis. Wiley, New York.
 
-}\author{Katherine S. Pollard <kpollard@ucdavis.edu> and Gregory D. Wall <gwall@wald.ucdavis.edu>}
+}
+
+\author{Katherine S. Pollard <kpollard@gladstone.ucsf.edu> and Gregory D. Wall <gwall@wald.ucdavis.edu>}
+
 \note{Thank you to Larry Tai for his assistance creating run-time comparisons.}
 
 \section{Warning }{

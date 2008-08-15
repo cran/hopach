@@ -110,8 +110,7 @@ van der Laan, M.J. and Pollard, K.S. A new algorithm for hybrid hierarchical clu
 \url{http://www.stat.berkeley.edu/~laan/Research/Research_subpages/Papers/jsmpaper.pdf}
 }
 
-\author{Katherine S. Pollard <kpollard@soe.ucsc.edu> and Mark J. van der 
-Laan <laan@stat.berkeley.edu>, with Greg Wall}
+\author{Katherine S. Pollard <kpollard@gladstone.ucsf.edu> and Mark J. van der Laan <laan@stat.berkeley.edu>, with Greg Wall}
 
 \seealso{\code{\link{distancematrix}}}
 

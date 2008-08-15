@@ -105,8 +105,7 @@ van der Laan, M.J. and Pollard, K.S. A new algorithm for hybrid hierarchical clu
 \url{http://www.stat.berkeley.edu/~laan/Research/Research_subpages/Papers/hopach.pdf}
 }
 
-\author{Katherine S. Pollard <kpollard@soe.ucsc.edu> and Mark J. van der 
-Laan <laan@stat.berkeley.edu>, with Greg Walll}
+\author{Katherine S. Pollard <kpollard@gladstone.ucsf.edu> and Mark J. van der Laan <laan@stat.berkeley.edu>, with Greg Walll}
 
 \section{Warning }{The 
 correlation and absolute correlation distance functions call the \code{cor} function, and will therefore fail if there are missing values in the data and na.rm!=TRUE.

@@ -41,7 +41,7 @@ van der Laan, M.J. and Pollard, K.S. A new algorithm for hybrid hierarchical clu
 
 }
 
-\author{Katherine S. Pollard <kpollard@soe.ucsc.edu>}
+\author{Katherine S. Pollard <kpollard@gladstone.ucsf.edu>}
 
 \note{Thank you to Lisa Simirenko <lsimirenko@lbl.gov> for providing HOPACH views in MapleTree, and to Karen Vranizan <vranizan@uclink.berkeley.edu> for her input. The MapleTree software can be downloaded from: http://sourceforge.net/projects/mapletree/}
 

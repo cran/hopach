@@ -148,7 +148,7 @@ Kaufman, L. and Rousseeuw, P.J. (1990). Finding Groups in Data: An Introduction 
 
 }
 
-\author{Katherine S. Pollard <kpollard@soe.ucsc.edu> and Mark J. van der Laan <laan@stat.berkeley.edu>}
+\author{Katherine S. Pollard <kpollard@gladstone.ucsf.edu> and Mark J. van der Laan <laan@stat.berkeley.edu>}
 
 \seealso{\code{\link{hopach}}}
 
