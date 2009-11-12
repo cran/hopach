@@ -1,5 +1,5 @@
 Package: hopach
-Version: 2.4.0
+Version: 2.6.0
 Title: Hierarchical Ordered Partitioning and Collapsing Hybrid (HOPACH)
 Author: Katherine S. Pollard, with Mark J. van der Laan
         <laan@stat.berkeley.edu> and Greg Wall
@@ -17,6 +17,6 @@ Description: The HOPACH clustering algorithm builds a hierarchical tree
 License: GPL (>= 2)
 URL: http://www.stat.berkeley.edu/~laan/, http://docpollard.com/
 biocViews: Clustering
-Packaged: 2009-04-21 09:22:00 UTC; biocbuild
+Packaged: 2009-11-12 09:14:54 UTC; biocbuild
 Repository: CRAN
-Date/Publication: 2009-05-10 18:54:27
+Date/Publication: 2009-11-13 10:43:21
