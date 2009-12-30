@@ -149,9 +149,13 @@ setMethod( "dim", "hdist", function(x){
 #                           HDIST Subsetting Method                            # 
 ################################################################################
 
-setMethod("[", signature="hdist", definition=function(x, i=NA, j=NA, ..., drop=TRUE ){
+setMethod("[", signature="hdist", definition=function(x, i, j, ... ){
 	ans <- numeric() 
 
+        ##### defaults #####
+        if(missing(i)) i<-NA
+        if(missing(j)) j<-NA
+        
 	##### remove all NAs, convert bools to numerics, remove 0 indices #####
 	if( is.logical(i) ){
 		if( length(i) == x@Size ){
