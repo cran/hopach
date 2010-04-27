@@ -1,6 +1,13 @@
 useDynLib(hopach)
 
-import(stats, Biobase, cluster)
+import(methods)
+importMethodsFrom(Biobase, exprs)
+importFrom(cluster, pam)
+importFrom(graphics, abline, axis, barplot, box, image, mtext, par,
+           plot, text)
+importFrom(grDevices, heat.colors, rainbow)
+importFrom(stats, cor, dist, median)
+importFrom(utils, write.table)
 
 exportClasses(hdist)
 exportMethods(show, "[", coerce, as.matrix, as.hdist, as.vector, length)
